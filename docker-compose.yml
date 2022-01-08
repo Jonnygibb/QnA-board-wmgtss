@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  qna-board:
+    # Build Q&A Board service based on the Dockerfile in this repo
+    build:
+      context: .
+    # Map port 8000 on the local machine to the port 8000 in the container
+    ports:
+      - "8000:8000"
+    # Connect app folder in this repo to the app folder in the container
+    # Allows for changes in the repo to be displayed without rebuild of docker image
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"

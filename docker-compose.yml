@@ -5,6 +5,11 @@ services:
     # Build Q&A Board service based on the Dockerfile in this repo
     build:
       context: .
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
     # Map port 8000 on the local machine to the port 8000 in the container
     ports:
       - "8000:8000"
@@ -20,6 +25,7 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=devpass
+      - ALLOWED_HOSTS=0.0.0.0
     # Docker will enable the db service before the Django app since there is a dependency 
     depends_on:
       - db

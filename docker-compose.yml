@@ -12,5 +12,24 @@ services:
     # Allows for changes in the repo to be displayed without rebuild of docker image
     volumes:
       - ./app:/app
-    command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+    # Sets environment vairables in the container for use by Django
+    environment:
+      - SECRET_KEY=developmentSecretKey
+      - DEBUG=1
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=devpass
+    # Docker will enable the db service before the Django app since there is a dependency 
+    depends_on:
+      - db
+
+  db:
+    # Build database from postgres image for alpine
+    image: postgres:13.5-alpine3.15
+    # Set environment variables for the database
+    # Since this is the dev enviroment, exposing the user and password is not a security risk
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=devpass

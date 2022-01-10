@@ -30,7 +30,7 @@ RUN python -m venv /py && \
     adduser --disabled-password --no-create-home wmgtss
 
 # Add the python virtual environment to the path
-ENV PATH="py/bin:$PATH"
+ENV PATH="/py/bin:$PATH"
 
 # Switch to unpriviledged user
 USER wmgtss

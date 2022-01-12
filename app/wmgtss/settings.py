@@ -36,6 +36,9 @@ ALLOWED_HOSTS.extend(
     )
 )
 
+# Change the Django user model to custom model in the board app
+AUTH_USER_MODEL = 'board.User'
+
 # Redirect users to the home page when they successfully log in
 LOGIN_REDIRECT_URL = "home"
 # Redirect users to the login page when they log out
@@ -50,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'board',
 ]
 

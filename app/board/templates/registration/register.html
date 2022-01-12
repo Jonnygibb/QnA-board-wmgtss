@@ -3,10 +3,12 @@
 {% block content %}
 <h2>Register</h2>
 
-<form method="post">
+<form action="" method="post">
     {% csrf_token %}
-    {{form}}
-    <input type="submit" value="Register">
+    <table>
+        {{ form.as_p }}
+    </table>
+    <input type="submit" name="register" value="Register">
 </form>
 
 <a href="{% url 'login' %}">Back to login</a>

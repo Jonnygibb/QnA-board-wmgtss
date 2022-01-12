@@ -36,6 +36,10 @@ ALLOWED_HOSTS.extend(
     )
 )
 
+# Redirect users to the home page when they successfully log in
+LOGIN_REDIRECT_URL = "home"
+# Redirect users to the login page when they log out
+LOGOUT_REDIRECT_URL = "login"
 
 # Application definition
 
@@ -46,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'board',
 ]
 

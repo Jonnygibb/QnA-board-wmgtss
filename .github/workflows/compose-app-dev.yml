@@ -1,0 +1,24 @@
+name: Compose App Development
+
+on:
+  push:
+    branches-ignore:
+      - main
+  
+
+jobs:
+  build:
+
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag wmgtss:$(date +%s)
+
+    - name: Build the stack
+      run: docker-compose up -d
+    
+    - name: Test the Django app
+      run: docker-compose run --rm wmgtss sh -c "python manage.py test"

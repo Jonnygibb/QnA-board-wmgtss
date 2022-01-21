@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls.base import reverse
 from django.views.generic.edit import FormView
+from django.views.generic import ListView
 from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
@@ -24,6 +25,11 @@ class BoardView(FormView):
             return render(request, 'users/home.html', content)
         else:
             return redirect(reverse('login'))
+
+class BoardListView(ListView):
+    model = Questions
+    template_name = 'users/home.html'
+    context_object_name = 'questions'
 
 class SignUpView(FormView):
     """

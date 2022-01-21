@@ -22,7 +22,7 @@ class SignUpTest(TestCase):
         """
         Tests sign up through web page with valid credentials
         """
-        response = self.client.post('/home/signup/', self.credentials, follow=True)
+        response = self.client.post('/signup/', self.credentials, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_user_created(self):

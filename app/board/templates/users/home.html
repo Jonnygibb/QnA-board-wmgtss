@@ -1,27 +1,21 @@
-<html>
-  <head>
-    <style>
-     body {
-      color: blueviolet;
-      text-align: center;
-      } 
- 
-    </style>
-  </head>
-  <body>
-    
-    <h1>Hello, {{ user.username|default:'Guest' }}</h1>
+{% extends "users/base.html" %}
+{% block content %}    
+  <h1>Hello, {{ user.username }}</h1>
 
-    <p>Here is the home page</p>
-    <div>
-      {% if user.is_authenticated %}
-          <a href="{% url 'logout' %}">Logout</a>
-    
-      {% else %}
-          <a href="{% url 'signup' %}">Sign Up</a>
-          <a href="{% url 'login' %}">Login</a>
-      {% endif %}
+  <a href="{% url 'logout' %}">Logout</a>
+  <div>
+    <br>
+    {% for question in questions %}
+      <article class="media content-section">
+        <div class="media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="#">{{ question.user }}</a>
+            <small class="text-muted">{{ question.created_at }}</small>
+          </div>
+          <h2><a class="article-title" href="#">{{ question.title }}</a></h2>
+          <p class="article-content">{{ question.description }}</p>
+        </div>
+      </article>
+    {% endfor %}
   </div>
-  
-  </body>
-</html>
+{% endblock content %}

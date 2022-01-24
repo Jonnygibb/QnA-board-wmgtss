@@ -23,5 +23,6 @@ urlpatterns = [
     # Including Django's authentication urls for user management
     path('accounts/', include('django.contrib.auth.urls')),
     # Adding the urls for the QnA Board
-    path('home/', include(board_urls)),
+    path('', include(board_urls)),
+    # Setting default page to login screen
 ]

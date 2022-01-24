@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls.base import reverse
 from django.views.generic.edit import FormView
+from django.views.generic import ListView
 from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
@@ -8,10 +9,27 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import SignUpForm, LogInForm
-from .models import User
+from .models import User, Questions
 
-def home(request):
-    return render(request, "users/home.html")
+class BoardView(FormView):
+    def get(self, request):
+        content = {}
+        if request.user.is_authenticated:
+            user = request.user
+            user.backend = 'django.contrib.core.backends.ModelBackend'
+            ques_obj = Questions.objects.filter(user=user)
+            content['userdetail'] = user
+            content['questions'] = ques_obj
+            #ans_obj = Answers.objects.filter(question=ques_obj[0])
+            #content['answers'] = ans_obj
+            return render(request, 'users/home.html', content)
+        else:
+            return redirect(reverse('login'))
+
+class BoardListView(ListView):
+    model = Questions
+    template_name = 'users/home.html'
+    context_object_name = 'questions'
 
 class SignUpView(FormView):
     """

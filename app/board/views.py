@@ -3,6 +3,7 @@ from django.urls.base import reverse
 from django.views.generic.edit import FormView
 from django.views.generic import ListView
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
@@ -28,9 +29,16 @@ class BoardView(FormView):
             return redirect(reverse('login'))
 
 class BoardListView(ListView):
+    
     model = Questions
     template_name = 'users/home.html'
     context_object_name = 'questions'
+    
+    # Adds protection to home page by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SignUpView, self).dispatch(request, *args, **kwargs)
+    
 
 class SignUpView(FormView):
     """

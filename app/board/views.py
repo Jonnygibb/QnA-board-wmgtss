@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 from .forms import SignUpForm, LogInForm
 from .models import User, Questions
@@ -67,12 +68,15 @@ class SignUpView(FormView):
         if form.is_valid():
             user = form.save(commit=False)
             user.password = make_password(form.cleaned_data['password'])
+            user.username = form.cleaned_data['username']
             user.save()
             login(request, user)
+            messages.success(request, 'Account created for {}!'.format(user.username))
             return redirect(reverse('home'))
         # Else, re render the sign in form again
         content['form'] = form
         template = 'registration/register.html'
+        messages.warning(request, 'Account could not be created')
         return render(request, template, content)
 
 class LogInView(FormView):

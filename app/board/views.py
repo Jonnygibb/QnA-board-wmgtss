@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls.base import reverse
 from django.views.generic.edit import FormView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -39,6 +39,16 @@ class BoardListView(ListView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(BoardListView, self).dispatch(request, *args, **kwargs)
+    
+class QuestionDetailView(DetailView):
+    
+    model = Questions
+    template_name = 'users/questions_detail.html'
+    
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(QuestionDetailView, self).dispatch(request, *args, **kwargs)
     
 
 class SignUpView(FormView):

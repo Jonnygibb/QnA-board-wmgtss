@@ -33,11 +33,12 @@ class BoardListView(ListView):
     model = Questions
     template_name = 'users/home.html'
     context_object_name = 'questions'
+    ordering = ['created_at']
     
     # Adds protection to home page by ensuring that only authenticated users can access it
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        return super(SignUpView, self).dispatch(request, *args, **kwargs)
+        return super(BoardListView, self).dispatch(request, *args, **kwargs)
     
 
 class SignUpView(FormView):

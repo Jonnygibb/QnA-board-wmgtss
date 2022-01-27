@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.urls.base import reverse
 from django.views.generic.edit import FormView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 from .forms import SignUpForm, LogInForm
 from .models import User, Questions
@@ -27,9 +29,27 @@ class BoardView(FormView):
             return redirect(reverse('login'))
 
 class BoardListView(ListView):
+    
     model = Questions
     template_name = 'users/home.html'
     context_object_name = 'questions'
+    ordering = ['created_at']
+    
+    # Adds protection to home page by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(BoardListView, self).dispatch(request, *args, **kwargs)
+    
+class QuestionDetailView(DetailView):
+    
+    model = Questions
+    template_name = 'users/questions_detail.html'
+    
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(QuestionDetailView, self).dispatch(request, *args, **kwargs)
+    
 
 class SignUpView(FormView):
     """
@@ -67,12 +87,15 @@ class SignUpView(FormView):
         if form.is_valid():
             user = form.save(commit=False)
             user.password = make_password(form.cleaned_data['password'])
+            user.username = form.cleaned_data['username']
             user.save()
             login(request, user)
+            messages.success(request, 'Account created for {}!'.format(user.username))
             return redirect(reverse('home'))
         # Else, re render the sign in form again
         content['form'] = form
         template = 'registration/register.html'
+        messages.warning(request, 'Account could not be created')
         return render(request, template, content)
 
 class LogInView(FormView):

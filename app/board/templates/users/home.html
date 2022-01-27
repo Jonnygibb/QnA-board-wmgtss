@@ -12,7 +12,8 @@
             <a class="mr-2" href="#">{{ question.user }}</a>
             <small class="text-muted">{{ question.created_at }}</small>
           </div>
-          <h2><a class="article-title" href="#">{{ question.title }}</a></h2>
+          <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
+          <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">{{ question.title }}</a></h2>
           <p class="article-content">{{ question.description }}</p>
         </div>
       </article>

@@ -6,7 +6,7 @@ class SignUpForm(forms.ModelForm):
     Form representing sign in webpage
     """
     # Field for password input - typed characters will be hidden
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         # User model from models.py

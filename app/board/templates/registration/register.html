@@ -1,16 +1,21 @@
-<!--/templates/register.html-->
-
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
-<h2>Register</h2>
-
-<form action="" method="post">
-    {% csrf_token %}
-    <table>
-        {{ form.as_p }}
-    </table>
-    <input type="submit" name="register" value="Register">
-</form>
-
-<a href="{% url 'login' %}">Back to login</a>
-<a href="{% url 'home' %}">Back to Home</a>
+    <div class="content-section">
+        <form action="" method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Register Today</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Register</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Have an account already? <a class="ml-2" href="{% url 'login' %}">Log In</a>
+            </small>
+        </div>
+    </div>
 {% endblock %}

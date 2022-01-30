@@ -7,7 +7,7 @@ class User(AbstractUser):
     pass
 
 class Questions(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=256, unique=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
@@ -20,6 +20,16 @@ class Questions(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['created_at']
+
+class Answer(models.Model):
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    description = models.TextField()
 
     class Meta:
         ordering = ['created_at']

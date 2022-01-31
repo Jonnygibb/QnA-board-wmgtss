@@ -1,8 +1,5 @@
 {% extends "users/base.html" %}
-{% block content %}    
-  <h1>Hello, {{ user.username }}</h1>
-
-  <a href="{% url 'logout' %}">Logout</a>
+{% block content %}
   <div>
     <br>
     {% for question in questions %}
@@ -16,6 +13,15 @@
           <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">{{ question.title }}</a></h2>
           <p class="article-content">{{ question.description }}</p>
         </div>
+        {% for answer in question.answer.all %}
+        <div class="media content-section">
+          <div class="article-metadata">
+            <a class="mr-2" href="#">{{ answer.user }}</a>
+            <small class="text-muted">{{ answer.created_at }}</small>
+          </div>
+          <p class="article-content">{{ answer.description }}</p>
+        </div>
+        {% endfor %}
       </article>
     {% endfor %}
   </div>

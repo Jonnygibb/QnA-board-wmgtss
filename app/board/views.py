@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls.base import reverse
 from django.views.generic.edit import FormView
-from django.views.generic import ListView, DetailView
+from django.views.generic import (ListView, 
+                                  DetailView,
+                                  CreateView)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -49,6 +51,27 @@ class QuestionDetailView(DetailView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(QuestionDetailView, self).dispatch(request, *args, **kwargs)
+
+
+class QuestionCreateView(CreateView):
+    model = Questions
+    template_name = 'users/questions_form.html'
+    fields = ['title', 'description']
+
+    def form_valid(self, form):
+        """
+        Overriding the form valid method to ensure that the logged in
+        user is set as the questions creator automatically
+        """
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        """
+        Overriding this method redirects the user to the home page rather than the
+        detail view of the question
+        """
+        return reverse('home')
     
 
 class SignUpView(FormView):

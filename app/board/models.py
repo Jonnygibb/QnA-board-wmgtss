@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
 from django.conf import settings
+from django.urls import reverse
 
 class User(AbstractUser):
     pass
@@ -17,6 +18,9 @@ class Questions(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Questions, self).save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse('question-detail', kwargs={'slug': self.slug})
 
     def __str__(self):
         return self.title

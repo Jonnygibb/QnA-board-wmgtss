@@ -1,21 +1,28 @@
 {% extends "users/base.html" %}
-{% block content %}    
-  <h1>Hello, {{ user.username }}</h1>
-
-  <a href="{% url 'logout' %}">Logout</a>
+{% block content %}
   <div>
     <br>
     {% for question in questions %}
-      <article class="media content-section">
-        <div class="media-body">
+      <article class="qna-styling media content-section">
+        <div class="question media-body">
           <div class="article-metadata">
             <a class="mr-2" href="#">{{ question.user }}</a>
             <small class="text-muted">{{ question.created_at }}</small>
           </div>
           <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
-          <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">{{ question.title }}</a></h2>
+          <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">Q: {{ question.title }}</a></h2>
           <p class="article-content">{{ question.description }}</p>
         </div>
+        {% for answer in question.answer.all %}
+        <br>
+        <div class="answer media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="#">{{ answer.user }}</a>
+            <small class="text-muted">{{ answer.created_at }}</small>
+          </div>
+          <p class="article-content">A: {{ answer.description }}</p>
+        </div>
+        {% endfor %}
       </article>
     {% endfor %}
   </div>

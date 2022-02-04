@@ -1,14 +1,24 @@
 {% extends "users/base.html" %}
 {% block content %}    
-  <article class="media content-section">
-    <div class="media-body">
+  <article class="qna-styling media content-section">
+    <div class="question media-body">
       <div class="article-metadata">
         <a class="mr-2" href="#">{{ object.user }}</a>
         <small class="text-muted">{{ object.created_at }}</small>
       </div>
-      <h2 class="article-title">{{ object.title }}</h2>
+      <h2 class="article-title">Q: {{ object.title }}</h2>
       <p class="article-content">{{ object.description }}</p>
       <p class="article-content">{{ object.answer.description }}</p>
     </div>
+    {% for answer in object.answer.all %}
+        <br>
+        <div class="answer media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="#">{{ object.user }}</a>
+            <small class="text-muted">{{ object.created_at }}</small>
+          </div>
+          <p class="article-content">A: {{ object.description }}</p>
+        </div>
+      {% endfor %}
   </article>
 {% endblock content %}

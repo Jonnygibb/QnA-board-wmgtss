@@ -3,7 +3,9 @@ from django.urls.base import reverse
 from django.views.generic.edit import FormView
 from django.views.generic import (ListView, 
                                   DetailView,
-                                  CreateView)
+                                  CreateView,
+                                  UpdateView,
+                                  DeleteView)
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -11,6 +13,7 @@ from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .forms import SignUpForm, LogInForm
 from .models import User, Questions
@@ -57,6 +60,31 @@ class QuestionCreateView(CreateView):
     model = Questions
     template_name = 'users/questions_form.html'
     fields = ['title', 'description']
+    success_url = '/'
+
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(CreateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """
+        Overriding the form valid method to ensure that the logged in
+        user is set as the questions creator automatically
+        """
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class QuestionUpdateView(UserPassesTestMixin, UpdateView):
+    model = Questions
+    template_name = 'users/questions_form.html'
+    fields = ['title', 'description']
+    success_url = '/'
+
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(UpdateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         """
@@ -66,12 +94,39 @@ class QuestionCreateView(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-    def get_success_url(self):
+    def test_func(self):
         """
-        Overriding this method redirects the user to the home page rather than the
-        detail view of the question
+        Uses a test to ensure that the creator of the question is only allowed to update
+        questions created by themselves
         """
-        return reverse('home')
+        question = self.get_object()
+        if self.request.user == question.user:
+            return True
+        else:
+            return False
+
+class QuestionDeleteView(UserPassesTestMixin, DeleteView):
+    
+    model = Questions
+    template_name = 'users/questions_confirm_delete.html'
+    success_url = '/'
+    
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(QuestionDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def test_func(self):
+        """
+        Uses a test to ensure that the creator of the question is only allowed to delete
+        questions created by themselves
+        """
+        question = self.get_object()
+        if self.request.user == question.user:
+            return True
+        else:
+            return False
+
     
 
 class SignUpView(FormView):

@@ -2,28 +2,32 @@
 {% block content %}
   <div>
     <br>
-    {% for question in questions %}
-      <article class="qna-styling media content-section">
-        <div class="question media-body">
-          <div class="article-metadata">
-            <a class="mr-2" href="#">{{ question.user }}</a>
-            <small class="text-muted">{{ question.created_at }}</small>
+    {% if not questions.all.exists %}
+      <h2>No questions exist at this time...</h2>
+    {% else %}
+      {% for question in questions %}
+        <article class="qna-styling media content-section">
+          <div class="question media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ question.user }}</a>
+              <small class="text-muted">{{ question.created_at }}</small>
+            </div>
+            <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
+            <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">Q: {{ question.title }}</a></h2>
+            <p class="article-content">{{ question.description }}</p>
           </div>
-          <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
-          <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">Q: {{ question.title }}</a></h2>
-          <p class="article-content">{{ question.description }}</p>
-        </div>
-        {% for answer in question.answer.all %}
-        <br>
-        <div class="answer media-body">
-          <div class="article-metadata">
-            <a class="mr-2" href="#">{{ answer.user }}</a>
-            <small class="text-muted">{{ answer.created_at }}</small>
+          {% for answer in question.answer.all %}
+          <br>
+          <div class="answer media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ answer.user }}</a>
+              <small class="text-muted">{{ answer.created_at }}</small>
+            </div>
+            <p class="article-content">A: {{ answer.description }}</p>
           </div>
-          <p class="article-content">A: {{ answer.description }}</p>
-        </div>
-        {% endfor %}
-      </article>
-    {% endfor %}
+          {% endfor %}
+        </article>
+      {% endfor %}
+    {% endif %}
   </div>
 {% endblock content %}

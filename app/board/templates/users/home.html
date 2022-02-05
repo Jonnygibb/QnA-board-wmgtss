@@ -8,13 +8,21 @@
       {% for question in questions %}
         <article class="qna-styling media content-section">
           <div class="question media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="#">{{ question.user }}</a>
-              <small class="text-muted">{{ question.created_at }}</small>
-            </div>
             <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
             <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">Q: {{ question.title }}</a></h2>
             <p class="article-content">{{ question.description }}</p>
+            <div class="float-right question-metadata">
+              <div class="question-author">
+                {% if question.user.is_superuser %}
+                  <p>Asked by: {{ question.user }}</p>
+                {% else %}
+                  <p>Asked by: {{ question.user.first_name }} {{ question.user.last_name }}</p>
+                {% endif %}
+              </div>
+              <div class="question-datetime">
+                <small class="text-muted">{{ question.created_at }}</small>
+              </div>
+            </div>
           </div>
           {% for answer in question.answer.all %}
           <br>

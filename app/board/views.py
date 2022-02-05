@@ -122,7 +122,7 @@ class QuestionDeleteView(UserPassesTestMixin, DeleteView):
         questions created by themselves
         """
         question = self.get_object()
-        if self.request.user == question.user:
+        if (self.request.user == question.user) or (self.request.user.is_superuser):
             return True
         else:
             return False

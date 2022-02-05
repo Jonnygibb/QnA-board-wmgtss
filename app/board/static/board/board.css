@@ -4,11 +4,6 @@ body {
     margin-top: 5rem;
   }
 
-  .qna-styling {
-    display: grid;
-    align-items: unset;
-  }
-
   .question {
     width: 100%;
   }
@@ -37,6 +32,38 @@ body {
 
   .question-datetime {
     text-align: center;
+  }
+
+  .stat {
+    display: flex;
+    border: 2px solid #e3e3e3;
+    margin-bottom: 2px;
+    max-width: 100px;
+    text-align: center;
+    flex-direction: column;
+  }
+
+  .stat-section {
+    display: flex;
+    flex-direction: column;
+    flex: 0;
+    margin-right: 20px;
+  }
+
+  .counter {
+    flex: 1;
+  }
+
+  .counter-text {
+    flex: 1;
+  }
+
+  .answer-stat {
+    background-color: #DAFFC9;
+  }
+
+  .comment-stat {
+    background-color: #fdfdfe;
   }
   
   h1, h2, h3, h4, h5, h6 {

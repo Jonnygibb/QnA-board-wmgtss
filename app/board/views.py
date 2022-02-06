@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.urls.base import reverse
 from django.views.generic.edit import FormView
 from django.views.generic import (ListView, 
-                                  DetailView,
                                   CreateView,
                                   UpdateView,
                                   DeleteView)
@@ -17,21 +16,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .forms import SignUpForm, LogInForm
 from .models import Comment, Answer, User, Questions
-
-class BoardView(FormView):
-    def get(self, request):
-        content = {}
-        if request.user.is_authenticated:
-            user = request.user
-            user.backend = 'django.contrib.core.backends.ModelBackend'
-            ques_obj = Questions.objects.filter(user=user)
-            content['userdetail'] = user
-            content['questions'] = ques_obj
-            #ans_obj = Answers.objects.filter(question=ques_obj[0])
-            #content['answers'] = ans_obj
-            return render(request, 'users/home.html', content)
-        else:
-            return redirect(reverse('login'))
 
 class BoardListView(ListView):
     

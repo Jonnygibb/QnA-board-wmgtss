@@ -27,6 +27,10 @@ body {
     margin-bottom: 1px;
   }
 
+  .background-blue {
+    background-color: #b4e5fa;
+  }
+
   .center {
     text-align: center;
   }

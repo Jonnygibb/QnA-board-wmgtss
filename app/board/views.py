@@ -16,7 +16,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .forms import SignUpForm, LogInForm
-from .models import User, Questions
+from .models import Answer, User, Questions
 
 class BoardView(FormView):
     def get(self, request):
@@ -126,6 +126,27 @@ class QuestionDeleteView(UserPassesTestMixin, DeleteView):
             return True
         else:
             return False
+
+class AnswerCreateView(CreateView):
+    model = Answer
+    template_name = 'users/answer_form.html'
+    fields = ['description']
+    success_url = '/'
+
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.question = Questions.objects.get(slug=kwargs['slug'])
+        return super(CreateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """
+        Overriding the form valid method to ensure that the logged in
+        user is set as the questions creator automatically
+        """
+        form.instance.user = self.request.user
+        form.instance.question = self.question
+        return super().form_valid(form)
 
     
 

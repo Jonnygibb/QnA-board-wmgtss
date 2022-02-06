@@ -7,46 +7,48 @@
     {% else %}
       {% for question in questions %}
         <article class="media content-section">
-          <div class="stat-section">
-            <div class="answer-stat stat">
-              <div class="counter">
-                <small class="text-muted">0</small>
+          <div class="question">
+            <div class="stat-section">
+              <div class="answer-stat stat">
+                <div class="counter">
+                  <small class="text-muted">0</small>
+                </div>
+                <div class="counter-text">
+                  <small class="text-muted">Answers</small>
+                </div>
               </div>
-              <div class="counter-text">
-                <small class="text-muted">Answers</small>
+              <div class="comment-stat stat">
+                <div class="counter">
+                  <small class="text-muted">0</small>
+                </div>
+                <div class="counter-text">
+                  <small class="text-muted">Comments</small>
+                </div>
               </div>
+              {% if user.is_superuser %}
+                <div class="stat">
+                  <a href="{% url 'answer-create' question.slug %}" class="btn btn-outline-primary btn-block">Add<br>Answer</a>
+                </div>
+                <div class="stat">
+                  <a href="{% url 'question-delete' question.slug %}" class="btn btn-outline-danger btn-block">Delete<br>Question</a>
+                </div>
+              {% endif %}
             </div>
-            <div class="comment-stat stat">
-              <div class="counter">
-                <small class="text-muted">0</small>
-              </div>
-              <div class="counter-text">
-                <small class="text-muted">Comments</small>
-              </div>
-            </div>
-            {% if user.is_superuser %}
-              <div class="stat">
-                <a href="{% url 'answer-create' %}" class="btn btn-outline-primary btn-block">Add<br>Answer</a>
-              </div>
-              <div class="stat">
-                <a href="{% url 'question-delete' question.slug %}" class="btn btn-outline-danger btn-block">Delete<br>Question</a>
-              </div>
-            {% endif %}
-          </div>
-          <div class="question media-body">
-            <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
-            <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">Q: {{ question.title }}</a></h2>
-            <p class="article-content">{{ question.description }}</p>
-            <div class="float-right question-metadata">
-              <div class="question-author">
-                {% if question.user.is_superuser %}
-                  <p>Asked by: {{ question.user }}</p>
-                {% else %}
-                  <p>Asked by: {{ question.user.first_name }} {{ question.user.last_name }}</p>
-                {% endif %}
-              </div>
-              <div class="question-datetime">
-                <small class="text-muted">{{ question.created_at }}</small>
+            <div class="media-body">
+              <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
+              <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">Q: {{ question.title }}</a></h2>
+              <p class="article-content">{{ question.description }}</p>
+              <div class="float-right question-metadata">
+                <div class="question-author">
+                  {% if question.user.is_superuser %}
+                    <p>Asked by: {{ question.user }}</p>
+                  {% else %}
+                    <p>Asked by: {{ question.user.first_name }} {{ question.user.last_name }}</p>
+                  {% endif %}
+                </div>
+                <div class="question-datetime">
+                  <small class="text-muted">{{ question.created_at }}</small>
+                </div>
               </div>
             </div>
           </div>

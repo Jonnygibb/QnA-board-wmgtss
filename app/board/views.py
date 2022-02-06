@@ -44,17 +44,6 @@ class BoardListView(ListView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(BoardListView, self).dispatch(request, *args, **kwargs)
-    
-class QuestionDetailView(DetailView):
-    
-    model = Questions
-    template_name = 'users/questions_detail.html'
-    
-    # Adds protection to questions by ensuring that only authenticated users can access it
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(QuestionDetailView, self).dispatch(request, *args, **kwargs)
-
 
 class QuestionCreateView(CreateView):
     model = Questions
@@ -148,6 +137,58 @@ class AnswerCreateView(CreateView):
         form.instance.question = self.question
         return super().form_valid(form)
 
+class AnswerUpdateView(UserPassesTestMixin, UpdateView):
+    model = Answer
+    template_name = 'users/answer_form.html'
+    fields = ['description']
+    success_url = '/'
+
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AnswerUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """
+        Overriding the form valid method to ensure that the logged in
+        user is set as the questions creator automatically
+        """
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+    def test_func(self):
+        """
+        Uses a test to ensure that the creator of the question is only allowed to update
+        questions created by themselves
+        """
+        answer = self.get_object()
+        if self.request.user == answer.user:
+            return True
+        else:
+            return False
+
+class AnswerDeleteView(UserPassesTestMixin, DeleteView):
+    
+    model = Answer
+    template_name = 'users/answer_confirm_delete.html'
+    success_url = '/'
+    
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AnswerDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def test_func(self):
+        """
+        Uses a test to ensure that the creator of the question is only allowed to delete
+        questions created by themselves
+        """
+        comment = self.get_object()
+        if (self.request.user == comment.user) or (self.request.user.is_superuser):
+            return True
+        else:
+            return False
+
 class CommentCreateView(CreateView):
     model = Comment
     template_name = 'users/answer_form.html'
@@ -168,6 +209,36 @@ class CommentCreateView(CreateView):
         form.instance.user = self.request.user
         form.instance.question = self.question
         return super().form_valid(form)
+
+class CommentUpdateView(UserPassesTestMixin, UpdateView):
+    model = Comment
+    template_name = 'users/comment_form.html'
+    fields = ['description']
+    success_url = '/'
+
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(CommentUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """
+        Overriding the form valid method to ensure that the logged in
+        user is set as the questions creator automatically
+        """
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+    def test_func(self):
+        """
+        Uses a test to ensure that the creator of the question is only allowed to update
+        questions created by themselves
+        """
+        answer = self.get_object()
+        if self.request.user == answer.user:
+            return True
+        else:
+            return False
 
 class CommentDeleteView(UserPassesTestMixin, DeleteView):
     

@@ -16,7 +16,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .forms import SignUpForm, LogInForm
-from .models import Answer, User, Questions
+from .models import Comment, Answer, User, Questions
 
 class BoardView(FormView):
     def get(self, request):
@@ -147,6 +147,49 @@ class AnswerCreateView(CreateView):
         form.instance.user = self.request.user
         form.instance.question = self.question
         return super().form_valid(form)
+
+class CommentCreateView(CreateView):
+    model = Comment
+    template_name = 'users/answer_form.html'
+    fields = ['description']
+    success_url = '/'
+
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.question = Questions.objects.get(slug=kwargs['slug'])
+        return super(CreateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        """
+        Overriding the form valid method to ensure that the logged in
+        user is set as the questions creator automatically
+        """
+        form.instance.user = self.request.user
+        form.instance.question = self.question
+        return super().form_valid(form)
+
+class CommentDeleteView(UserPassesTestMixin, DeleteView):
+    
+    model = Comment
+    template_name = 'users/comment_confirm_delete.html'
+    success_url = '/'
+    
+    # Adds protection to questions by ensuring that only authenticated users can access it
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(CommentDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def test_func(self):
+        """
+        Uses a test to ensure that the creator of the question is only allowed to delete
+        questions created by themselves
+        """
+        comment = self.get_object()
+        if (self.request.user == comment.user) or (self.request.user.is_superuser):
+            return True
+        else:
+            return False
 
     
 

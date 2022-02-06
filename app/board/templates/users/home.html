@@ -11,18 +11,18 @@
             <div class="stat-section">
               <div class="answer-stat stat">
                 <div class="counter">
-                  <small class="text-muted">0</small>
+                  <small class="text-muted">{{ question.answer.count }}</small>
                 </div>
                 <div class="counter-text">
-                  <small class="text-muted">Answers</small>
+                  <small class="text-muted">Answer/s</small>
                 </div>
               </div>
               <div class="comment-stat stat">
                 <div class="counter">
-                  <small class="text-muted">0</small>
+                  <small class="text-muted">{{ question.comment.count }}</small>
                 </div>
                 <div class="counter-text">
-                  <small class="text-muted">Comments</small>
+                  <small class="text-muted">Comment/s</small>
                 </div>
               </div>
               {% if user.is_superuser %}
@@ -54,14 +54,39 @@
           </div>
           {% for answer in question.answer.all %}
           <br>
+          <h4>Answers</h4>
           <div class="answer media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="#">{{ answer.user }}</a>
+              {% if answer.user.is_superuser %}
+                <p class="blue mr-2">{{ answer.user }}</p>
+              {% else %}
+                <p class="blue mr-2">{{ answer.user.first_name }} {{ answer.user.last_name }}</p>
+              {% endif %}
               <small class="text-muted">{{ answer.created_at }}</small>
             </div>
             <p class="article-content">A: {{ answer.description }}</p>
           </div>
           {% endfor %}
+          {% for comment in question.comment.all %}
+          <br>
+          <h4>Comments</h4>
+          <div class="comment media-body">
+            <small class="text-muted article-content">{{ comment.description }}</small>
+            <small class="blue"> - {{ comment.user }}</small>
+            <small class="text-muted">@ {{ comment.created_at }}</small>
+            {% if user.is_superuser %}
+              <a class="btn btn-danger btn-sm" href="{% url 'comment-delete' question.slug comment.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                </svg>
+              </a>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <div class="top-padded center long">
+            <a class="text-muted" href="{% url 'comment-create' question.slug %}">Add a comment</a>
+          </div>
         </article>
       {% endfor %}
     {% endif %}

@@ -2,28 +2,118 @@
 {% block content %}
   <div>
     <br>
-    {% for question in questions %}
-      <article class="qna-styling media content-section">
-        <div class="question media-body">
-          <div class="article-metadata">
-            <a class="mr-2" href="#">{{ question.user }}</a>
-            <small class="text-muted">{{ question.created_at }}</small>
+    {% if not questions.all.exists %}
+      <h2>No questions exist at this time...</h2>
+    {% else %}
+      {% for question in questions %}
+        <article class="media content-section">
+          <div class="question">
+            <div class="stat-section">
+              <div class="answer-stat stat">
+                <div class="counter">
+                  <small class="text-muted">{{ question.answer.count }}</small>
+                </div>
+                <div class="counter-text">
+                  <small class="text-muted">Answer/s</small>
+                </div>
+              </div>
+              <div class="comment-stat stat">
+                <div class="counter">
+                  <small class="text-muted">{{ question.comment.count }}</small>
+                </div>
+                <div class="counter-text">
+                  <small class="text-muted">Comment/s</small>
+                </div>
+              </div>
+              {% if user.is_superuser %}
+                <div class="stat">
+                  <a class="btn btn-outline-primary btn-block" href="{% url 'answer-create' question.slug %}">Add<br>Answer</a>
+                </div>
+                <div class="stat">
+                  <a class="btn btn-outline-secondary btn-block" href="{% url 'question-update' question.slug %}">Update<br>Question</a>
+                </div>
+                <div class="stat">
+                  <a class="btn btn-outline-danger btn-block" href="{% url 'question-delete' question.slug %}">Delete<br>Question</a>
+                </div>
+              {% elif user == question.user %}
+                <div class="stat">
+                  <a class="btn btn-outline-secondary btn-block" href="{% url 'question-update' question.slug %}">Update<br>Question</a>
+                </div>
+                <div class="stat">
+                  <a class="btn btn-outline-danger btn-block" href="{% url 'question-delete' question.slug %}">Delete<br>Question</a>
+                </div>
+              {% endif %}
+            </div>
+            <div class="media-body">
+              <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
+              <h2>Q: {{ question.title }}</h2>
+              <p class="article-content">{{ question.description }}</p>
+              <div class="float-right question-metadata">
+                <div class="question-author">
+                  {% if question.user.is_superuser %}
+                    <p>Asked by: {{ question.user }}</p>
+                  {% else %}
+                    <p>Asked by: {{ question.user.first_name }} {{ question.user.last_name }}</p>
+                  {% endif %}
+                </div>
+                <div class="question-datetime">
+                  <small class="text-muted">{{ question.created_at }}</small>
+                </div>
+              </div>
+            </div>
           </div>
-          <!--URl here uses the slug field to redirect users to the detail page of a specific question-->
-          <h2><a class="article-title" href="{% url 'question-detail' question.slug %}">Q: {{ question.title }}</a></h2>
-          <p class="article-content">{{ question.description }}</p>
-        </div>
-        {% for answer in question.answer.all %}
-        <br>
-        <div class="answer media-body">
-          <div class="article-metadata">
-            <a class="mr-2" href="#">{{ answer.user }}</a>
-            <small class="text-muted">{{ answer.created_at }}</small>
+          {% if question.answer.count > 0 %}
+            <h4>Answers</h4>
+          {% endif %}
+          {% for answer in question.answer.all %}
+            <br>
+            <div class="answer media-body">
+              <div class="article-metadata">
+                {% if answer.user.is_superuser %}
+                  <p class="blue mr-2">{{ answer.user }}</p>
+                {% else %}
+                  <p class="blue mr-2">{{ answer.user.first_name }} {{ answer.user.last_name }}</p>
+                {% endif %}
+                <small class="text-muted">{{ answer.created_at }}</small>
+                {% if user.is_superuser or user == comment.user %}
+                  <a class="btn btn-danger btn-sm" href="{% url 'answer-delete' question.slug answer.id %}">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </a>
+                  <a class="btn btn-secondary btn-sm" href="{% url 'answer-update' question.slug answer.id %}">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                {% endif %}
+              </div>
+              <p class="article-content">A: {{ answer.description }}</p>
+            </div>
+          {% endfor %}
+          {% if question.comment.count > 0 %}
+            <h4>Comments</h4>
+          {% endif %}
+          {% for comment in question.comment.all %}
+          <br>
+          <div class="comment media-body">
+            <small class="text-muted article-content">{{ comment.description }}</small>
+            <small class="blue"> - {{ comment.user }}</small>
+            <small class="text-muted">@ {{ comment.created_at }}</small>
+            {% if user.is_superuser or user == comment.user %}
+              <a class="btn btn-danger btn-sm" href="{% url 'comment-delete' question.slug comment.id %}">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </a>
+              <a class="btn btn-secondary btn-sm" href="{% url 'comment-update' question.slug comment.id %}">
+                <i class="fas fa-edit"></i>
+              </a>
+            {% endif %}
           </div>
-          <p class="article-content">A: {{ answer.description }}</p>
-        </div>
-        {% endfor %}
-      </article>
-    {% endfor %}
+          {% endfor %}
+          <div class="top-padded center long">
+            <a class="text-muted" href="{% url 'comment-create' question.slug %}">Add a comment</a>
+          </div>
+        </article>
+      {% endfor %}
+    {% endif %}
+  </div>
+  <div>
+    <a class="background-blue btn btn-primary btn-bg" href="{% url 'question-create' %}">Ask a Question</a>
   </div>
 {% endblock content %}

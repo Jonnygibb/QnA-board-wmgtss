@@ -175,7 +175,7 @@ class AnswerDeleteView(UserPassesTestMixin, DeleteView):
 
 class CommentCreateView(CreateView):
     model = Comment
-    template_name = 'users/answer_form.html'
+    template_name = 'users/comment_form.html'
     fields = ['description']
     success_url = '/'
 

@@ -103,7 +103,9 @@ class Comment(models.Model):
     # This foreign key field creates a one to one relationship with a question.
     # On delete cascase is also used here as a comment cannot exist without its
     # associated question.
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name='comment')
+    question = models.ForeignKey(Questions,
+                                 on_delete=models.CASCADE,
+                                 related_name='comment')
     # The user foreign key links the logged in user to the selected comment instance.
     # By using on delete cascade, a comment will be deleted if the user is deleted.
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

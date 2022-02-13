@@ -14,6 +14,8 @@
                 <h2>Are you sure you want to delete question "{{ object.title }}"</h2>
             </fieldset>
             <div class="form-group">
+                <!-- Renders two buttons, one for deletion of the question... -->
+                <!-- ... and one to cancel and return to the home page -->
                 <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
                 <a class="btn btn-outline-secondary" href="{% url 'home' %}">Cancel</a>
             </div>

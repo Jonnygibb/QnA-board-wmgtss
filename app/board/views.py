@@ -30,38 +30,66 @@ class BoardListView(ListView):
         return super(BoardListView, self).dispatch(request, *args, **kwargs)
 
 class QuestionCreateView(CreateView):
+    """
+    Create view for Question model
+    """
+    # Specifies which model the view should update.
     model = Questions
+    # Points the view to which template the model should be rendered on.
     template_name = 'users/questions_form.html'
+    # Specifies which fields from the model that the view should render.
     fields = ['title', 'description']
+    # On successful object creation, success url is where the user should
+    # be redirected. In this case it is back to the home page.
     success_url = '/'
 
-    # Adds protection to questions by ensuring that only authenticated users can access it
+    # Method decorator adds protection to create view by ensuring
+    # that only authenticated users can access it.
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        """
+        Overwrites Django dispatch method that handles incoming
+        http requests
+        """
         return super(CreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         """
-        Overriding the form valid method to ensure that the logged in
+        Overwrites the form valid method to ensure that the logged in
         user is set as the questions creator automatically
         """
         form.instance.user = self.request.user
         return super().form_valid(form)
 
 class QuestionUpdateView(UserPassesTestMixin, UpdateView):
+    """
+    Update view for Question model
+    """
+    # Specifies which model the view should update.
     model = Questions
+    # Points the view to which template the model should be rendered on.
+    # The template is the same as the create view since the question
+    # can be created and updated using the same template.
     template_name = 'users/questions_form.html'
+    # Specifies which fields from the model that the view should render.
     fields = ['title', 'description']
+    # On successful object creation, success url is where the user should
+    # be redirected. In this case it is back to the home page.
     success_url = '/'
 
-    # Adds protection to questions by ensuring that only authenticated users can access it
+    # Method decorator adds protection to create view by ensuring
+    # that only authenticated users can access it.
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        """
+        Overwrites Django dispatch method that handles incoming
+        http requests
+        """
         return super(UpdateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         """
-        Overriding the form valid method to ensure that the logged in
+        Overwrites the form valid method to ensure that the logged in
         user is set as the questions creator automatically
         """
         form.instance.user = self.request.user
@@ -69,8 +97,8 @@ class QuestionUpdateView(UserPassesTestMixin, UpdateView):
     
     def test_func(self):
         """
-        Uses a test to ensure that the creator of the question is only allowed to update
-        questions created by themselves
+        Uses a test to ensure that the creator of the question is only allowed to delete
+        questions created by themselves.
         """
         question = self.get_object()
         if self.request.user == question.user:
@@ -79,12 +107,21 @@ class QuestionUpdateView(UserPassesTestMixin, UpdateView):
             return False
 
 class QuestionDeleteView(UserPassesTestMixin, DeleteView):
-    
+    """
+    Delete view for Question model
+    """
+    # Specifies which model the view should update.
     model = Questions
+    # Points the view to which template the model should be rendered on.
+    # The template is unique since the delete page only asks the user
+    # whether they are sure they want to delete the object.
     template_name = 'users/questions_confirm_delete.html'
+    # On successful object creation, success url is where the user should
+    # be redirected. In this case it is back to the home page.
     success_url = '/'
     
-    # Adds protection to questions by ensuring that only authenticated users can access it
+    # Method decorator adds protection to create view by ensuring
+    # that only authenticated users can access it.
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(QuestionDeleteView, self).dispatch(request, *args, **kwargs)
@@ -92,7 +129,8 @@ class QuestionDeleteView(UserPassesTestMixin, DeleteView):
     def test_func(self):
         """
         Uses a test to ensure that the creator of the question is only allowed to delete
-        questions created by themselves
+        questions created by themselves. If a user is a superuser (Tutor) they are also
+        able to delete a question.
         """
         question = self.get_object()
         if (self.request.user == question.user) or (self.request.user.is_superuser):

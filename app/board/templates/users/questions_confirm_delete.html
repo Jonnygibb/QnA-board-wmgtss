@@ -1,15 +1,21 @@
+<!-- Uses Django template language to extend base html page -->
 {% extends "users/base.html" %}
+<!-- The content to be inserted into the base template -->
 {% block content %}
     <div class="content-section">
         <form action="" method="post">
+            <!-- Inlcudes a token to identify each user of the website -->
+            <!-- Helps to prevent cross site request forgery -->
             {% csrf_token %}
             <fieldset class="form-group">
+                <!-- Renders a title for the form -->
                 <legend class="border-bottom mb-4">Delete Question</legend>
+                <!-- Renders a large heading including the question objects title -->
                 <h2>Are you sure you want to delete question "{{ object.title }}"</h2>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
-                <a class="btn btn-outline-secondary" href="{% url 'question-detail' object.slug %}">Cancel</a>
+                <a class="btn btn-outline-secondary" href="{% url 'home' %}">Cancel</a>
             </div>
         </form>
     </div>

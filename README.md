@@ -7,7 +7,7 @@ In order to use the Q&A Board, docker and docker-compose are requried. This proj
 
 ## Instructions
  1. Open terminal of choice (bash, powershell, cmd etc.)
- 2. Change directory to the wmgtss folder
+ 2. Change directory into the 'QnA-board-wmgtss-main' folder
  3. Build the docker image by running 'docker-compose build'
  4. Once the build has finished, spin up the container by running 'docker-compose up'
  5. After the container has become live, visit: http://0.0.0.0:8000/ or alternatively http://localhost:8000/

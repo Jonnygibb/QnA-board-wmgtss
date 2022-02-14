@@ -14,3 +14,5 @@ In order to use the Q&A Board, docker and docker-compose are requried. This proj
  6. This will bring you to the login page. Feel free to click the sign up link and login to the page to experiment with it's functinality!
  7. Alternativly, the database is seeded with users, questions, answers and more already. The user's usernames available are: jessday3, winbish, esmith1 and ceceparekh1. The password for all these users are 'password'.
  8. If you want to experiement with features only available to tutors, use the credentials Tutor:SecureTutorPassw0rd in order to log in.
+
+The GitHub repository can be found at this location: https://github.com/Jonnygibb/QnA-board-wmgtss

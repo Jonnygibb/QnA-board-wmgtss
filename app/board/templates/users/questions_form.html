@@ -1,14 +1,22 @@
+<!-- Uses Django template language to extend base html page -->
 {% extends "users/base.html" %}
+<!-- Loads a Django extension that beautifies forms -->
 {% load crispy_forms_tags %}
+<!-- The content to be inserted into the base template -->
 {% block content %}
     <div class="content-section">
         <form action="" method="post">
+            <!-- Inlcudes a token to identify each user of the website -->
+            <!-- Helps to prevent cross site request forgery -->
             {% csrf_token %}
             <fieldset class="form-group">
+                <!-- Creates a title for the form -->
                 <legend class="border-bottom mb-4">Submit a question</legend>
+                <!-- Uses crispy form extension to load model fields into a webpage -->
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
+                <!-- Renders a submit button for the form -->
                 <button class="btn btn-outline-info" type="submit">Submit</button>
             </div>
         </form>

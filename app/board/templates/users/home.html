@@ -94,7 +94,11 @@
           <br>
           <div class="comment media-body">
             <small class="text-muted article-content">{{ comment.description }}</small>
-            <small class="blue"> - {{ comment.user }}</small>
+            {% if answer.user.is_superuser %}
+              <small class="blue">{{ comment.user }}</small>
+            {% else %}
+              <small class="blue mr-2">{{ comment.user.first_name }} {{ comment.user.last_name }}</small>
+            {% endif %}
             <small class="text-muted">@ {{ comment.created_at }}</small>
             {% if user.is_superuser or user == comment.user %}
               <a class="btn btn-danger btn-sm" href="{% url 'comment-delete' question.slug comment.id %}">

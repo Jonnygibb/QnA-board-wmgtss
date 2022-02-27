@@ -1,6 +1,6 @@
 # QnA-board-wmgtss
 
-This repository houses the Q&A Board for the WMGTSS system. This board provides students a tutors the opportunity to ask questions, give answers and leave comments on questions. The purpose of this board is to give students and tutors the opportunity to share information about their course with all of their students rather than just one to one email chains. 
+This repository houses the Q&A Board for the WMGTSS system. This board provides students and tutors the opportunity to ask questions, give answers and leave comments on questions. The purpose of this board is to give students and tutors the opportunity to share information about their course with all of their students rather than just one to one email chains. 
 
 ## Prerequisites
 In order to use the Q&A Board, docker and docker-compose are requried. This project is tested against docker version 20.10.12, build e91ed57 and docker-compose version v2.2.3 on all platforms (MacOS, Windows & Linux). All of these softwares can be aquried from https://docs.docker.com/get-docker/
